@@ -1,0 +1,27 @@
+---
+- name: install tomcat application
+  hosts: all
+  become: yes
+  tasks:
+  - name: install java
+    yum:
+     name: java
+     state: installed
+    when: ansible_os_family == "RedHat"
+  - name: download the tomcat
+    get_url:
+     url: https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.98/bin/apache-tomcat-8.5.98.tar.gz
+     dest: /opt
+  - name: extract the tomcat
+    unarchive:
+     src: /opt/apache-tomcat-8.5.98.tar.gz
+     dest: /opt
+     remote_src: True
+  - name: change permissions
+    file:
+     path: /opt/apache-tomcat-8.5.98/bin/startup.sh
+     mode: 0777
+  - name: start tomcat application
+    shell: sh startup.sh
+    args:
+     chdir: /opt/apache-tomcat-8.5.98/bin

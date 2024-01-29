@@ -1,0 +1,9 @@
+---
+- name: create a group
+  hosts: all
+  become: true
+  tasks:
+  - name: create a group
+    groups: 
+     name: devops
+     state: present

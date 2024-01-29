@@ -1,0 +1,38 @@
+---
+- name: install jenkins tool
+  hosts: all
+  become: true
+  tasks:
+  - name: install java
+    yum:
+     name: java
+     state: present
+    when: ansible_family == "RedHat"
+
+  - name: install java if the instances are in debian family
+    apt:
+     name: default-jdk
+     state: present
+    when: ansible_family == "Debian"
+
+  - name: download jenkins
+    get_url:
+      url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+      path: /opt/
+  - name: install jenkins
+    get_url:
+      url: http://mirrors.jenkins.io/war/latest/jenkins.war
+      dest: /opt/jenkins.war
+
+  - name: Create Jenkins systemd service
+    systemd:
+      name: jenkins
+      enabled: yes
+      state: started
+    notify: restart jenkins
+
+  handlers:
+  - name: restart jenkins
+    service:
+      name: jenkins
+      state: restarted 

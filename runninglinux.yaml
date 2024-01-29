@@ -1,0 +1,7 @@
+---
+- name: Running linux commands
+  hosts: all
+  become: true
+  tasks:
+  - name: linux commands
+    command: yum install java -y

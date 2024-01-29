@@ -1,0 +1,15 @@
+---
+- name: install webserver package
+  hosts: all
+  become: true
+  tasks:
+  - name: install webserver
+    yum: 
+     name: tree
+     state: installed
+    when: ansible_os_family == "RedHat"
+  - name: copy index.html
+    copy:
+     src: /home/ansadmin/index.html
+     dest: /var/www/html
+     mode: 0666

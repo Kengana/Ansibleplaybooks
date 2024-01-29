@@ -1,0 +1,6 @@
+---
+- name: this is for creating the user
+  hosts: all
+  become: true
+  tasks:
+  - user: name=sai

@@ -1,0 +1,25 @@
+---
+- name: test playbook
+  hosts: all
+  become: true
+  tasks:
+  - name: install httpd using when condition
+    yum:
+     name: httpd
+     state: installed
+    when: ansible_os_family == "RedHat"
+  - name: start the httpd service
+    service:
+     name: httpd
+     state: started
+    when: ansible_os_family == "RedHat"
+  - name: install apache2 package
+    apt:
+     name: apache2
+     status: present
+    when: ansible_os_family == "Debian"
+  - name: start the apache2 package
+    service:
+     name: apache2
+     state: started
+    when: ansible_os_family == "Debian"

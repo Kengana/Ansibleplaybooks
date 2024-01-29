@@ -1,0 +1,7 @@
+---
+- name: create another user
+  hosts: all
+  become: true
+  tasks:
+  - name: create user2
+    user: name=chinnu
