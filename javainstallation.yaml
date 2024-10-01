@@ -1,0 +1,33 @@
+---
+- name: Install Java and configure environment variables
+  hosts: all
+  become: true
+  gather_facts: yes
+
+  tasks:
+    - name: Install Java
+      package:
+        name: "{{ java_package }}"
+        state: present
+      vars:
+        java_package: "{{ 'openjdk-11-jdk' if ansible_os_family == 'Debian' else 'java-1.8.0-openjdk-devel' }}"
+
+    - name: Set up Java environment variables
+      copy:
+        dest: /etc/profile.d/java.sh
+        content: |
+          export JAVA_HOME=/usr/lib/jvm/{{ java_home_path }}
+          export PATH=$JAVA_HOME/bin:$PATH
+      vars:
+        java_home_path: "{{ 'java-1.8.0-openjdk' if ansible_os_family == 'RedHat' else 'java-11-openjdk-amd64' }}"
+      mode: '0755'
+
+    - name: Source the environment variables
+      shell: source /etc/profile.d/java.sh
+
+    - name: Verify Java installation
+      command: java -version
+      register: java_version
+
+    - debug:
+        msg: "Java installation successful: {{ java_version.stdout }}"
