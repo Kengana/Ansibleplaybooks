@@ -20,7 +20,14 @@
           export PATH=$JAVA_HOME/bin:$PATH
       vars:
         java_home_path: "{{ 'java-1.8.0-openjdk' if ansible_os_family == 'RedHat' else 'java-11-openjdk-amd64' }}"
-      mode: '0755'
+      # Removed 'mode' here because it's invalid with 'copy'
+
+    - name: Set file permission for Java environment variables file
+      file:
+        path: /etc/profile.d/java.sh
+        mode: '0755'
+        owner: root
+        group: root
 
     - name: Source the environment variables
       shell: source /etc/profile.d/java.sh
@@ -31,3 +38,4 @@
 
     - debug:
         msg: "Java installation successful: {{ java_version.stdout }}"
+
